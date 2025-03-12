@@ -84,7 +84,8 @@ h6{
 }
 
 a{
-    display:inline-block
+    display:inline-block;
+    text-decoration: none;
 }
 
 a:active,a:focus,a:hover{
@@ -312,6 +313,11 @@ input.au-input.au-input-xl{
  * Left Menu Bar
  * ----------------------------
  */
+
+.router-link-active{
+    color:#04090c;
+    font-weight: bold;
+}
 
 .menu-sidebar{
     width:200px;
