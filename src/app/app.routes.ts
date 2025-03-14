@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ProductsListComponent } from './components/products-list/products-list.component';
 
 export const routes: Routes = [
+    { path: 'search/:keyword', component: ProductsListComponent },
     { path: 'category/:id', component: ProductsListComponent },
     { path: 'category', component: ProductsListComponent },
     { path: 'products', component: ProductsListComponent },
