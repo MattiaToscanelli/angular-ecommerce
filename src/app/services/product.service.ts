@@ -26,12 +26,17 @@ export class ProductService {
     );
   }
 
-  searchProducts(theKeyword: string) {
+  searchProducts(theKeyword: string) : Observable<Product[]> {
     const searchURL = `${this.baseURL}/search/findByNameContaining?name=${theKeyword}`;
     return this.getProducts(searchURL);
   }
 
-  private getProducts(searchURL: string) {
+  getProduct(productId: number) : Observable<Product> {
+    const productURL = `${this.baseURL}/${productId}`;
+    return this.httpClient.get<Product>(productURL);
+  }
+
+  private getProducts(searchURL: string) : Observable<Product[]> {
     return this.httpClient.get<GetResponseProducts>(searchURL).pipe(
       map(response => response._embedded.products)
     );

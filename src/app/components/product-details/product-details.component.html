@@ -1,0 +1,66 @@
+
+<div class="section-content section-content-p30">
+    <div class="detail-section container-fluid">
+        <div *ngIf="product && dataLoaded"> <!-- container più stretto -->
+
+            <!-- BREADCRUMB -->
+            <div class="row justify-content-center">
+                <div class="">
+                    <nav aria-label="breadcrumb" class="my-3">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a [routerLink]="['/products']">Products</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- BLOCCO IMMAGINE + DETTAGLI -->
+            <div class="row justify-content-center mt-3">
+                <div class="col-lg-10"> <!-- larghezza controllata e centrata -->
+                    <div class="row g-5 align-items-center">
+
+                        <!-- IMMAGINE A SINISTRA -->
+                        <div class="col-md-6">
+                            <img src="{{ product.imageUrl }}" alt="{{ product.name }}"
+                                class="img-fluid rounded-4 shadow-sm detail-img">
+                        </div>
+
+                        <!-- INFO PRODOTTO A DESTRA -->
+                        <div class="col-md-6">
+                            <h1 class="product-title mb-3">{{ product.name }}</h1>
+                            <p class="product-price h3 text-success mb-4">{{ product.unitPrice | currency:'USD' }}</p>
+
+                            <a href="#" (click)="$event.preventDefault(); $event.stopPropagation()"
+                                class="btn btn-primary btn-lg px-4">
+                                Add to Cart
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- DESCRIZIONE -->
+            <div class="row justify-content-center mt-5">
+                <div class="col-lg-10">
+                    <h3 class="mb-3">Description</h3>
+                    <p class="product-description text-muted fs-5">{{ product.description }}</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Show a message if no products are found -->
+        <div *ngIf="!product && dataLoaded" class="pt-4">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="alert alert-warning" role="alert">
+                        No product found
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
