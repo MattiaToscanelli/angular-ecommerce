@@ -30,16 +30,16 @@ export class ProductDetailsComponent implements OnInit {
     this.dataLoaded = false;
     // get the "id" param string. convert string to a number using the "+" symbol
     const productId: number = +this.route.snapshot.paramMap.get('id')!;
-    this.productService.getProduct(productId).subscribe(
-      data => {
+    this.productService.getProduct(productId).subscribe({
+      next: data => {
         this.product = data;
         this.dataLoaded = true; // Dati caricati
       },
-      error => {
-        console.error('Product error:', error);
+      error: err => {
+        console.error('Product error:', err);
         this.dataLoaded = true; // Dati caricati
       }
-    )
+    });
   }
   
 }

@@ -3,10 +3,11 @@ import { ProductService } from '../../services/product.service';
 import { Product } from '../../common/product';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-products-list',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, NgbPaginationModule],
   templateUrl: './products-list-grid.component.html',
   styleUrl: './products-list.component.css'
 })
@@ -14,8 +15,15 @@ export class ProductsListComponent implements OnInit {
 
   products: Product[] = [];
   currentCategoryId: number = 1;
+  previousCategoryId: number = 1;
   searchMode: boolean = false;
   dataLoaded: boolean = false;
+
+  thePageNumber: number = 1;
+  thePageSize: number = 10;
+  theTotalElements: number = 0;
+
+  previousKeyword: string = '';
 
   constructor(
     private productService: ProductService, 
@@ -42,15 +50,18 @@ export class ProductsListComponent implements OnInit {
   handleSearchProducts() {
     const theKeyword: string = this.route.snapshot.paramMap.get('keyword')!.trim();
 
-    this.productService.searchProducts(theKeyword).subscribe(
-      data => {
-        this.products = data;
-        this.dataLoaded = true; // Dati caricati
-      },
-      error => {
-        console.error('Search error:', error);
-        this.dataLoaded = true; // Dati caricati
-      }
+    if (this.previousKeyword != theKeyword) {
+      this.thePageNumber = 1;
+    }
+
+    this.previousKeyword = theKeyword;
+
+    this.productService.searchProductPaginate(
+      this.thePageNumber-1, 
+      this.thePageSize, 
+      theKeyword)
+    .subscribe(
+      this.processResult()
     );
   }
 
@@ -61,15 +72,41 @@ export class ProductsListComponent implements OnInit {
       ? +this.route.snapshot.paramMap.get('id')!
       : 1;
 
-    this.productService.getProductList(this.currentCategoryId).subscribe(
-      data => {
-        this.products = data;
-        this.dataLoaded = true; // Dati caricati
-      },
-      error => {
-        console.error('Fetch error:', error);
-        this.dataLoaded = true; // Dati caricati
-      }
+    if (this.previousCategoryId != this.currentCategoryId) {
+      this.thePageNumber = 1;
+    }
+
+    this.previousCategoryId = this.currentCategoryId;
+    console.log(`currentCategoryId=${this.currentCategoryId}, thePageNumber=${this.thePageNumber}`);
+
+    this.productService.getProductListPaginate(
+      this.thePageNumber - 1, 
+      this.thePageSize, 
+      this.currentCategoryId)
+    .subscribe(
+      this.processResult(),
     );
+  }
+
+  updatePageSize(theNewPageSize: string) {
+    this.thePageSize = +theNewPageSize;
+    this.thePageNumber = 1;
+    this.listProducts();
+  }
+
+  processResult() {
+    return {
+      next: (data: any) => {
+        this.products = data._embedded.products;
+        this.thePageNumber = data.page.number + 1;
+        this.thePageSize = data.page.size;
+        this.theTotalElements = data.page.totalElements;
+        this.dataLoaded = true; 
+      },
+      error: (err: any) => {
+        console.error(err);
+        this.dataLoaded = true; 
+      }
+    };
   }
 }
