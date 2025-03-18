@@ -11,6 +11,10 @@ export class SearchComponent {
 
   constructor(private router: Router) { }
 
+  scroll(arg0: number,arg1: number) {
+    window.scroll(arg0,arg1);
+  }
+
   doSearch(value: string) {
     console.log(`value=${value}`);
     this.router.navigateByUrl(`/search/${value}`);

@@ -29,4 +29,8 @@ export class ProductCategoryMenuComponent implements OnInit{
     );
   }
 
+  scroll(arg0: number,arg1: number) {
+    window.scroll(arg0,arg1);
+  }
+
 }

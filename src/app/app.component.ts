@@ -12,4 +12,8 @@ import { SearchComponent } from './components/search/search.component';
 })
 export class AppComponent {
   title = 'anglurar-ecommerce';
+
+  scroll(arg0: number,arg1: number) {
+    window.scroll(arg0,arg1);
+  }
 }

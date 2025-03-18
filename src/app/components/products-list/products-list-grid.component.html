@@ -44,12 +44,12 @@
               [pageSize]="thePageSize" 
               [collectionSize]="theTotalElements"
               [maxSize]="5"
-              (pageChange)="listProducts()">
+              (pageChange)="listProducts(); scroll(0,0);">
             </ngb-pagination>
             <div class="d-flex align-items-center">
               <span class="me-2">Page Size</span>
               <select #myPageSelect class="form-select w-auto" 
-              (change)="updatePageSize(myPageSelect.value)" 
+              (change)="updatePageSize(myPageSelect.value); scroll(0,0);" 
               [value]="thePageSize">
                 <option>5</option>
                 <option>10</option>
