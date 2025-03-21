@@ -3,6 +3,8 @@ import { Product } from '../../common/product';
 import { ProductService } from '../../services/product.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { CartService } from '../../services/cart.service';
+import { CartItem } from '../../common/cart-item';
 
 @Component({
   selector: 'app-product-details',
@@ -16,6 +18,7 @@ export class ProductDetailsComponent implements OnInit {
   dataLoaded: boolean = false;
 
   constructor(private productService: ProductService,
+              private cartService: CartService,
               private route: ActivatedRoute
   ) { }
 
@@ -40,6 +43,11 @@ export class ProductDetailsComponent implements OnInit {
         this.dataLoaded = true; // Dati caricati
       }
     });
+  }
+
+  addToCart() {
+    const theCartItem = new CartItem(this.product);
+    this.cartService.addToCart(theCartItem);
   }
   
 }

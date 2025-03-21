@@ -17,7 +17,7 @@
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text">{{ product.unitPrice | currency:'USD' }}</p>
                     <div class="mt-auto">
-                      <a href="#" (click)="$event.preventDefault(); $event.stopPropagation()" class="btn btn-primary">Add to Cart</a>
+                      <button (click)="addToCart(product); $event.preventDefault(); $event.stopPropagation()" class="btn btn-primary">Add to Cart</button>
                     </div>
                   </div>
                 </div>
@@ -51,10 +51,10 @@
               <select #myPageSelect class="form-select w-auto" 
               (change)="updatePageSize(myPageSelect.value); scroll(0,0);" 
               [value]="thePageSize">
-                <option>5</option>
-                <option>10</option>
-                <option>20</option>
-                <option>50</option>
+                <option>6</option>
+                <option>12</option>
+                <option>24</option>
+                <option>48</option>
               </select>   
             </div>
           </div>
