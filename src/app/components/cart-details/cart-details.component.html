@@ -41,6 +41,7 @@
                                 <div>Total Quantity: {{ totalQuantity }}</div>
                                 <div> Shipping: FREE </div>
                                 <div>Total Price: {{ totalPrice | currency: 'USD' }}</div>
+                                <a [routerLink]="['/checkout']" class="btn btn-primary mt-2">Proceed to Checkout</a>
                             </div>
                         </td>
                     </tr>
