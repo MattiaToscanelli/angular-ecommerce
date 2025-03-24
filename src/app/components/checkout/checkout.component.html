@@ -10,6 +10,10 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="firstName" type="text">
+                                <div *ngIf="firstName?.invalid && (firstName?.dirty || firstName?.touched)" class="alert alert-danger">
+                                    <div *ngIf="firstName?.errors?.['required']">First Name is required</div>
+                                    <div *ngIf="firstName?.errors?.['minlength']">First Name must be at least 2 characters</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -18,6 +22,10 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="lastName" type="text">
+                                <div *ngIf="lastName?.invalid && (lastName?.dirty || lastName?.touched)" class="alert alert-danger">
+                                    <div *ngIf="lastName?.errors?.['required']">Last Name is required</div>
+                                    <div *ngIf="lastName?.errors?.['minlength']">Last Name must be at least 2 characters</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -26,6 +34,10 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="email" type="text">
+                                <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="alert alert-danger">
+                                    <div *ngIf="email?.errors?.['required']">Email is required</div>
+                                    <div *ngIf="email?.errors?.['pattern']">Email must be a valid email address format</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -38,8 +50,8 @@
                         <div class="col-md-2"><label>Country</label></div>
                         <div class="col-md-9">
                             <div class="input-space">
-                                <select formControlName="country">
-                                    <option>TO DO</option>
+                                <select formControlName="country" (change)="getStates('shippingAddress')">
+                                    <option *ngFor="let temp of countries" [ngValue]="temp">{{ temp.name }}</option>
                                 </select>
                             </div>
                         </div>
@@ -65,7 +77,7 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <select formControlName="state">
-                                    <option>TO DO</option>
+                                    <option *ngFor="let temp of shippingAddressStates" [ngValue]="temp">{{ temp.name }}</option>
                                 </select>
                             </div>
                         </div>
@@ -95,8 +107,8 @@
                         <div class="col-md-2"><label>Country</label></div>
                         <div class="col-md-9">
                             <div class="input-space">
-                                <select formControlName="country">
-                                    <option>TO DO</option>
+                                <select formControlName="country" (change)="getStates('billingAddress')">
+                                    <option *ngFor="let temp of countries" [ngValue]="temp">{{ temp.name }}</option>
                                 </select>
                             </div>
                         </div>
@@ -122,7 +134,7 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <select formControlName="state">
-                                    <option>TO DO</option>
+                                    <option *ngFor="let temp of billingAddressStates" [ngValue]="temp">{{ temp.name }}</option>
                                 </select>
                             </div>
                         </div>
@@ -180,7 +192,7 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <select formControlName="expirationMonth">
-                                    <option>TO DO</option>
+                                    <option *ngFor="let temp of creditCardMonths">{{ temp }}</option>
                                 </select>
                             </div>
                         </div>
@@ -189,8 +201,8 @@
                         <div class="col-md-2"><label>Expiration Year</label></div>
                         <div class="col-md-9">
                             <div class="input-space">
-                                <select formControlName="expirationYear">
-                                    <option>TO DO</option>
+                                <select formControlName="expirationYear" (change)="handleMonthsAndYears()">
+                                    <option *ngFor="let temp of creditCardYears">{{ temp }}</option>
                                 </select>
                             </div>
                         </div>

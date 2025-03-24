@@ -1061,3 +1061,9 @@ footer ul li{
     position: relative;
     z-index: 10; /* Higher than default content */
   }
+
+ .input-space .alert {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-top: 6px;
+  }
