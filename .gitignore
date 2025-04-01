@@ -42,4 +42,3 @@ testem.log
 Thumbs.db
 
 public/assets/images/products/*
-src/app/config/my-app-config.ts
