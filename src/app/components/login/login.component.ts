@@ -31,10 +31,9 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Gestisci il ritorno da Okta se siamo nel callback
+  
     if (window.location.pathname === '/login/callback') {
       this.oktaAuth.handleLoginRedirect().then(() => {
-        // Dopo aver gestito il login redirect, naviga alla home
         this.router.navigate(['/']);
       }).catch(err => {
         console.error('Errore nel gestire il login redirect:', err);
@@ -42,18 +41,14 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    // Se non siamo nel callback, controlliamo se l'utente è già autenticato
     this.oktaAuth.isAuthenticated().then(authenticated => {
       if (authenticated) {
-        // Se l'utente è già autenticato, naviga alla home
         this.router.navigate(['/']);
       } else {
-        // Se l'utente non è autenticato, mostra il widget di login Okta
         this.oktaSignIn.renderEl(
           { el: '#okta-sign-in-widget' },
           (response: any) => {
             if (response.status === 'SUCCESS') {
-              // Gestisci il login direttamente senza signInWithRedirect
               this.oktaAuth.tokenManager.setTokens(response.tokens);
               this.oktaSignIn.remove();
               this.router.navigate(['/']);
