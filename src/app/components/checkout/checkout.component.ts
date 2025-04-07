@@ -35,6 +35,8 @@ export class CheckoutComponent implements OnInit {
   shippingAddressStates: State[] = [];
   billingAddressStates: State[] = [];
 
+  storage: Storage = sessionStorage;
+
   constructor(private shopFormService: ShopFormService,
     private cartService: CartService,
     private formBuilder: FormBuilder,
@@ -74,6 +76,9 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
 
     this.reviewCartDetails();
+
+    const theEmail = this.storage.getItem('userEmail');
+    this.checkoutFormGroup.get('customer.email')?.setValue(theEmail);
 
     const startMonth: number = new Date().getMonth() + 1;
 
@@ -190,8 +195,8 @@ export class CheckoutComponent implements OnInit {
     }
 
     let order = new Order(
-      this.totalPrice, 
-      this.totalQuantity
+      this.totalQuantity, 
+      this.totalPrice
     );
 
     // cart items
