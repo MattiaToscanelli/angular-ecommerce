@@ -18,6 +18,7 @@ export class OrderHistoryComponent implements OnInit {
   constructor(private orderHistoryService: OrderHistoryService) { }
 
   ngOnInit(): void {
+    scroll(0,0);
     this.handleOrderHistory();
   }
 
@@ -38,6 +39,10 @@ export class OrderHistoryComponent implements OnInit {
         this.dataLoaded = true; 
       }
     });
+  }
+
+  scroll(arg0: number,arg1: number) {
+    window.scroll(arg0,arg1);
   }
   
 }
