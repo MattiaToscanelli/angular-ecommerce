@@ -57,9 +57,6 @@ export class LoginComponent implements OnInit, OnDestroy {
               this.oktaAuth.tokenManager.setTokens(response.tokens);
               this.oktaSignIn.remove();
               this.router.navigate(['/']);
-
-               // TODO: TEST with Https
-              // this.oktaAuth.signInWithRedirect();
             }
           },
           (err: any) => {
