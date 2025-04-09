@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { OktaAuth } from '@okta/okta-auth-js';
 import { OKTA_AUTH } from '@okta/okta-angular';
 import OktaSignIn from '@okta/okta-signin-widget';
@@ -10,7 +10,7 @@ import myAppConfig from '../../config/my-app-config';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   oktaSignIn: any;
 
@@ -31,6 +31,11 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Ensure the widget container is empty before rendering
+    const widgetEl = document.getElementById('okta-sign-in-widget');
+    if (widgetEl) {
+      widgetEl.innerHTML = '';
+    }
   
     if (window.location.pathname === '/login/callback') {
       this.oktaAuth.handleLoginRedirect().then(() => {
@@ -40,7 +45,7 @@ export class LoginComponent implements OnInit {
       });
       return;
     }
-
+  
     this.oktaAuth.isAuthenticated().then(authenticated => {
       if (authenticated) {
         this.router.navigate(['/']);
@@ -53,7 +58,7 @@ export class LoginComponent implements OnInit {
               this.oktaSignIn.remove();
               this.router.navigate(['/']);
 
-              // TODO: TEST with Https
+               // TODO: TEST with Https
               // this.oktaAuth.signInWithRedirect();
             }
           },
@@ -63,5 +68,10 @@ export class LoginComponent implements OnInit {
         );
       }
     });
+  
   }
+
+  ngOnDestroy(): void {
+    this.oktaSignIn.remove();
+  }  
 }
