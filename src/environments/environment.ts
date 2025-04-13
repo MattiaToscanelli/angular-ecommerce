@@ -1,2 +1,5 @@
-export const environment = {};
+export const environment = {
+    ecommerceApiUrl: '',
+    stripePublishableKey: '',
+};
   

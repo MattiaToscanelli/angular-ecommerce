@@ -13,6 +13,8 @@ import { OrderItem } from '../../common/order-item';
 import { Purchase } from '../../common/purchase';
 import { Customer } from '../../common/customer';
 import { Address } from '../../common/address';
+import { environment } from '../../../environments/environment';
+import { PaymentInfo } from '../../common/payment-info';
 
 @Component({
   selector: 'app-checkout',
@@ -36,6 +38,12 @@ export class CheckoutComponent implements OnInit {
   billingAddressStates: State[] = [];
 
   storage: Storage = sessionStorage;
+
+  // initialize Stripe API
+  stripe = Stripe(environment.stripePublishableKey);
+  paymentInfo: PaymentInfo = new PaymentInfo();
+  cardElement: any;
+  displayError: any = "";
 
   constructor(private shopFormService: ShopFormService,
     private cartService: CartService,
@@ -63,24 +71,28 @@ export class CheckoutComponent implements OnInit {
         zipCode: new FormControl('', [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace])
       }),
       creditCard: this.formBuilder.group({
+        /*
         cardType: new FormControl('', [Validators.required]),
         nameOnCard: new FormControl('', [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace]),
         cardNumber: new FormControl('', [Validators.required, Validators.pattern('[0-9]{16}')]),
         securityCode: new FormControl('', [Validators.required, Validators.pattern('[0-9]{3}')]),
         expirationMonth: [''],
-        expirationYear: ['']
+        expirationYear: ['']*/
+
       })
     });
   }
 
   ngOnInit(): void {
 
+    this.setupStripePaymentForm();
+
     this.reviewCartDetails();
 
     const theEmail = this.storage.getItem('userEmail');
     this.checkoutFormGroup.get('customer.email')?.setValue(theEmail);
 
-    const startMonth: number = new Date().getMonth() + 1;
+    /*const startMonth: number = new Date().getMonth() + 1;
 
     this.shopFormService.getCreditCardMonths(startMonth).subscribe(
       data => {
@@ -92,13 +104,33 @@ export class CheckoutComponent implements OnInit {
       data => {
         this.creditCardYears = data;
       }
-    );
+    );*/
 
     this.shopFormService.getCountries().subscribe(
       data => {
         this.countries = data;
       }
     );
+  }
+
+  setupStripePaymentForm() {
+    var elements = this.stripe.elements();
+
+    this.cardElement = elements.create('card', {
+      hidePostalCode: true // do not display the postal code element
+    });
+    this.cardElement.mount('#card-element');
+
+    this.cardElement.on('change', (event: any) => {
+      this.displayError = document.getElementById('card-errors');
+      if (event.error) {
+        this.displayError.textContent = event.error.message;
+      } else {
+        this.displayError.textContent = '';
+      }
+    });
+    
+
   }
 
   reviewCartDetails() {
@@ -127,10 +159,11 @@ export class CheckoutComponent implements OnInit {
   get billingAddressCountry() { return this.checkoutFormGroup.get('billingAddress.country'); }
   get billingAddressZipCode() { return this.checkoutFormGroup.get('billingAddress.zipCode'); }
 
+  /*
   get creditCardType() { return this.checkoutFormGroup.get('creditCard.cardType'); }
   get creditCardNameOnCard() { return this.checkoutFormGroup.get('creditCard.nameOnCard'); }
   get creditCardNumber() { return this.checkoutFormGroup.get('creditCard.cardNumber'); }
-  get creditCardSecurityCode() { return this.checkoutFormGroup.get('creditCard.securityCode'); }
+  get creditCardSecurityCode() { return this.checkoutFormGroup.get('creditCard.securityCode'); }*/
 
   copyShippingAddressToBillingAddress($event: Event) {
     if (($event.target as HTMLInputElement).checked) {
@@ -145,6 +178,7 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
+  /* 
   handleMonthsAndYears() {
     const creditCardFormGroup = this.checkoutFormGroup.get('creditCard');
     const currentYear: number = new Date().getFullYear();
@@ -160,7 +194,7 @@ export class CheckoutComponent implements OnInit {
         this.creditCardMonths = data;
       }
     );
-  }
+  }*/
 
   getStates(formGroupName: string) {
     const formGroup = this.checkoutFormGroup.get(formGroupName);
@@ -230,8 +264,12 @@ export class CheckoutComponent implements OnInit {
       orderItems
     );
 
+    //compute payment amount
+    this.paymentInfo.amount = Math.round(this.totalPrice * 100);
+    this.paymentInfo.currency = 'USD';
+
     // call REST API via the CheckoutService
-    this.checkoutService.placeOrder(purchase).subscribe({
+    /*this.checkoutService.placeOrder(purchase).subscribe({
       next: response => {
         alert(`Your order has been received.\nOrder tracking number: ${response.orderTrackingNumber}`);
 
@@ -241,7 +279,39 @@ export class CheckoutComponent implements OnInit {
       error: err => {
         alert(`There was an error: ${err.message}`);
       }
-    });
+    });*/
+
+    if (!this.checkoutFormGroup.invalid && this.displayError.textContent === '') {
+      this.checkoutService.createPaymentIntent(this.paymentInfo).subscribe(
+        (paymentIntentResponse) => {
+          this.stripe.confirmCardPayment(paymentIntentResponse.client_secret, {
+            payment_method: {
+              card: this.cardElement,
+            }
+          }, {handleActions: false}).then((result: any) => {
+            if (result.error) {
+              alert(`There was an error: ${result.error.message}`);
+            } else {
+              // call REST API via the CheckoutService
+              this.checkoutService.placeOrder(purchase).subscribe({
+                next: response => {
+                  alert(`Your order has been received.\nOrder tracking number: ${response.orderTrackingNumber}`);
+      
+                  // reset cart
+                  this.resetCart();
+                },
+                error: err => {
+                  alert(`There was an error: ${err.message}`);
+                }
+              });
+            }
+          })
+        }
+      );
+    } else {
+      this.checkoutFormGroup.markAllAsTouched();
+      return;
+    }
  
   }
 
