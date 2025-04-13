@@ -1,59 +1,121 @@
-# AnglurarEcommerce
+# 🛒 Angular eCommerce Web App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.2.
+This project is a modern and responsive eCommerce frontend application built with **Angular**.  
+It serves as the client-side interface for an eCommerce platform, communicating with a separate backend powered by **Spring Boot** (available in a different repository).
 
-## Development server
+---
 
-To start a local development server, run:
+## 🚀 How to Run Locally
 
-```bash
-ng serve
-```
+To start the Angular eCommerce app locally:
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+1. Install the dependencies:
+   ```bash
+   npm install
+   ```
 
-## Code scaffolding
+2. Run the development server:
+   ```bash
+   npm start
+   ```
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+3. Visit the app in your browser:
+   ```
+   https://localhost:4200
+   ```
 
-```bash
-ng generate component component-name
-```
+> Make sure to configure Okta and SSL if needed (see sections below).
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## 🖥️ Backend Repository
 
-## Building
+The backend REST API is built with **Spring Boot** and is available here:  
+🔗 [spring-boot-ecommerce](https://github.com/MattiaToscanelli/spring-boot-ecommerce)
 
-To build the project run:
+Make sure to clone and run the backend repository as well to enable full functionality (product listing, checkout, etc).
 
-```bash
-ng build
-```
+---
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 🔐 Connect Okta to Angular
 
-## Running unit tests
+To enable authentication with **Okta**, follow these steps:
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+1. Open a command-prompt window.
 
-```bash
-ng test
-```
+2. Move into the Angular project directory:
+   ```bash
+   cd angular-ecommerce
+   ```
 
-## Running end-to-end tests
+3. Create a directory for your configuration file:
+   ```bash
+   mkdir config
+   ```
 
-For end-to-end (e2e) testing, run:
+4. Create the configuration file:
+   ```bash
+   touch my-app-config.ts
+   ```
 
-```bash
-ng e2e
-```
+5. Add your Okta parameters to the file:
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+   ```ts
+   export default {
+       oidc: {
+           clientId: '<client_id>',
+           issuer: 'https://<issuer>/oauth2/default',
+           redirectUri: 'https://localhost:4200/login/callback',
+           scopes: ['openid', 'profile', 'email'],
+       }
+   }
+   ```
 
-## Additional Resources
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 🔒 Add OpenSSL to Angular (for HTTPS in local dev)
+
+To generate a self-signed SSL certificate for local development:
+
+1. Open a command-prompt window.
+
+2. Navigate to your Angular project:
+   ```bash
+   cd angular-ecommerce
+   ```
+
+3. Create a directory for SSL files:
+   ```bash
+   mkdir ssl-localhost
+   ```
+
+4. Inside the project root, create a file named `localhost.conf`.
+
+5. Add the following configuration (customize values as needed):
+
+   ```ini
+   [req]
+   prompt = no
+   distinguished_name = dn
+
+   [dn]
+   C = <country_code>
+   ST = <state>
+   L = <city>
+   O = <department_name>
+   OU = <group_name>
+   CN = localhost
+   ```
+
+6. Save the file.
+
+7. Run the following command from your project directory:
+   ```bash
+   openssl req -x509 -out ssl-localhost\localhost.crt -keyout ssl-localhost\localhost.key -newkey rsa:2048 -nodes -sha256 -days 365 -config localhost.conf
+   ```
+
+8. Verify that the `ssl-localhost` folder contains the following files:
+   - `localhost.crt`
+   - `localhost.key`
+
+---
