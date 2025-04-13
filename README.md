@@ -1,7 +1,8 @@
 # 🛒 Angular eCommerce Web App
 
-This project is a modern and responsive eCommerce frontend application built with **Angular**.  
-It serves as the client-side interface for an eCommerce platform, communicating with a separate backend powered by **Spring Boot** (available in a different repository).
+This is a frontend eCommerce application developed using Angular.  
+The main objective was to explore and learn the framework, so the graphical design was kept simple.  
+It communicates with a backend powered by **Spring Boot** (available in a separate repository).
 
 ---
 
@@ -24,7 +25,7 @@ To start the Angular eCommerce app locally:
    https://localhost:4200
    ```
 
-> Make sure to configure Okta and SSL if needed (see sections below).
+> Make sure to configure Okta, Stripe, and SSL if needed (see sections below).
 
 ---
 
@@ -117,5 +118,24 @@ To generate a self-signed SSL certificate for local development:
 8. Verify that the `ssl-localhost` folder contains the following files:
    - `localhost.crt`
    - `localhost.key`
+
+---
+
+## 💳 Add Stripe to Angular
+
+To enable Stripe integration for payment processing:
+
+1. Open the file `src/environments/environment.development.ts`
+
+2. Add your Stripe publishable key to the configuration:
+
+   ```ts
+   export const environment = {
+       ecommerceApiUrl: 'https://localhost:8443/api',
+       stripePublishableKey: '<stripe-publishable-key>',
+   };
+   ```
+
+Make sure your backend (Spring Boot) is also configured with the corresponding secret key.
 
 ---
