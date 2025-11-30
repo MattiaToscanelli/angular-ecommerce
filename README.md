@@ -32,7 +32,8 @@ To start the Angular eCommerce app locally:
 ## 🖥️ Backend Repository
 
 The backend REST API is built with **Spring Boot** and is available here:  
-🔗 [spring-boot-ecommerce](https://github.com/MattiaToscanelli/spring-boot-ecommerce)
+🔗 [spring-boot-ecommerce](https://github.com/MattiaToscanelli/springboot-ecommerce)
+
 
 Make sure to clone and run the backend repository as well to enable full functionality (product listing, checkout, etc).
 
